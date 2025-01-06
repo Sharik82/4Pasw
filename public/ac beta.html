@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Особистий кабінет - Зоомагазин</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+    
+        .cabinet-container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+    
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            box-shadow: inset -1px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+    
+        .sidebar h3 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+    
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+    
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+    
+        .sidebar ul li a:hover {
+            background-color: #4CAF50;
+        }
+    
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+    
+        .main-content {
+            padding: 40px;
+            flex-grow: 1;
+            background-color: #f9f9f9;
+        }
+    
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 200;
+            display: none;
+            cursor: move;
+        }
+    
+        .modal.show {
+            display: block;
+        }
+    
+        .modal h3 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+    
+        .modal input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            position: relative;
+        }
+    
+        .modal input i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4CAF50;
+        }
+    
+        .modal button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+    
+        .modal .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #4CAF50;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+            padding: 5px;
+        }
+    
+        .modal .close-btn:hover {
+            color: red; /* Підсвічування червоним */
+            transform: scale(1.1); /* Легке збільшення при наведенні */
+        }
+    
+        .add-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    
+        .add-button:hover {
+            background-color: #45A049;
+            transform: translateY(-3px);
+        }
+    
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: top 0.5s, opacity 0.5s;
+            z-index: 100;
+        }
+    
+        .notification.show {
+            top: 20px;
+            opacity: 1;
+        }
+    
+        .payment-method {
+            padding: 15px;
+            background-color: #fff;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+    
+        .payment-method:hover {
+            background-color: #f1f1f1;
+        }
+    
+        .payment-method p {
+            margin: 0;
+        }
+    
+        .payment-method .actions {
+            display: flex;
+            gap: 10px;
+        }
+    
+        .payment-method button {
+            background-color: transparent;
+            border: none;
+            color: #4CAF50;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+    
+        .payment-method button:hover {
+            color: #45A049;
+        }
+    </style>
+    
+</head>
+<body>
+
+<div class="cabinet-container">
+    <div class="sidebar">
+        <h3>Мій Кабінет</h3>
+        <ul>
+            <li><a href="#"><i class="fas fa-user"></i> Профіль</a></li>
+            <li><a href="/Users/denisshargorodsky/Desktop/:Project4Paws/public:/orders.html"><i class="fas fa-box"></i> Мої замовлення</a></li>
+            <li><a href="#"><i class="fas fa-wallet"></i> Методи оплати</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Налаштування</a></li>
+            <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> Вийти</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h2>Методи оплати</h2>
+        <button class="add-button" onclick="showModal()">Додати нову картку</button>
+        <div id="paymentMethods"></div>
+
+        <h2>Адреси доставки</h2>
+        <button class="add-button" onclick="showAddressModal()">Додати адресу</button>
+        <div id="addressList" class="address-section"></div>
+    </div>
+</div>
+
+<div class="modal" id="paymentModal">
+    <button class="close-btn" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
+    <h3>Додати нову картку</h3>
+    <input type="text" id="cardNumber" placeholder="Номер картки" required>
+    <i class="fas fa-credit-card"></i>
+    <input type="text" id="expiryDate" placeholder="Термін дії (DD/MM/YYYY)" required>
+    <i class="fas fa-calendar-alt"></i>
+    <input type="text" id="cvv" placeholder="CVV" required>
+    <button onclick="addPaymentMethod()">Додати</button>
+</div>
+
+<div class="modal" id="addressModal">
+    <button class="close-btn" onclick="closeModal('addressModal')"><i class="fas fa-times"></i></button>
+    <h3>Додати адресу</h3>
+    <input type="text" id="addressInput" placeholder="Ваша адреса" required>
+    <button onclick="addAddress()">Додати</button>
+</div>
+
+<div class="notification" id="notification">Замовлення успішне!</div>
+
+<script>
+    let offsetX, offsetY, isDragging = false;
+
+    // Функція для відкриття модальних вікон
+    function showModal() {
+        document.getElementById('paymentModal').classList.add('show');
+    }
+
+    function showAddressModal() {
+        document.getElementById('addressModal').classList.add('show');
+    }
+
+    // Функція для закриття модальних вікон
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Додавання нового методу оплати
+    function addPaymentMethod() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        if (cardNumber && expiryDate && cvv) {
+            const paymentMethods = document.getElementById('paymentMethods');
+            const paymentMethodDiv = document.createElement('div');
+            paymentMethodDiv.className = 'payment-method';
+            paymentMethodDiv.innerHTML = `
+                <p>Картка: **** **** **** ${cardNumber.slice(-4)}</p>
+                <p>Термін дії: ${expiryDate}</p>
+                <p>CVV: ${cvv}</p>
+                <div class="actions">
+                    <button onclick="editPaymentMethod(this)">Редагувати</button>
+                    <button onclick="removePaymentMethod(this)">Видалити</button>
+                </div>`;
+            paymentMethods.appendChild(paymentMethodDiv);
+            closeModal('paymentModal');
+            showNotification();
+        } else {
+            alert("Будь ласка, заповніть всі поля.");
+        }
+    }
+
+    // Видалення платіжного методу
+    function removePaymentMethod(button) {
+        button.closest('.payment-method').remove();
+    }
+
+    // Редагування платіжного методу
+    function editPaymentMethod(button) {
+        const paymentMethodDiv = button.closest('.payment-method');
+        const cardNumber = paymentMethodDiv.querySelector('p:nth-child(1)').textContent.replace('Картка: **** **** **** ', '');
+        const expiryDate = paymentMethodDiv.querySelector('p:nth-child(2)').textContent.replace('Термін дії: ', '');
+        const cvv = paymentMethodDiv.querySelector('p:nth-child(3)').textContent.replace('CVV: ', '');
+
+        document.getElementById('cardNumber').value = cardNumber;
+        document.getElementById('expiryDate').value = expiryDate;
+        document.getElementById('cvv').value = cvv;
+
+        closeModal('paymentModal');
+        showModal();
+        removePaymentMethod(button); // Видаляємо стару картку
+    }
+
+    // Додавання нової адреси
+    function addAddress() {
+        var address = document.getElementById('addressInput').value;
+
+        if (address) {
+            var addressList = document.getElementById('addressList');
+            var addressDiv = document.createElement('div');
+            addressDiv.className = 'address-item';
+            addressDiv.innerHTML = `<p>${address}</p>`;
+            addressList.appendChild(addressDiv);
+            closeModal('addressModal');
+        } else {
+            alert("Будь ласка, введіть адресу.");
+        }
+    }
+
+    // Показати повідомлення
+    function showNotification() {
+        var notification = document.getElementById('notification');
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // Можливість переміщати модальне вікно
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - modal.offsetLeft;
+            offsetY = e.clientY - modal.offsetTop;
+            modal.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const modal = document.querySelector('.modal.show');
+                modal.style.left = `${e.clientX - offsetX}px`;
+                modal.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            const modal = document.querySelector('.modal.show');
+            modal.style.transition = 'top 0.3s, left 0.3s';
+        });
+    });
+</script>
+<script src="/Users/denisshargorodsky/Desktop/:Project4Paws/src:/js:/server.js"></script>
+</body>
+</html>
